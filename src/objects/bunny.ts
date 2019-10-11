@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Settings } from "./settings";
+import { Settings } from "../settings";
 import { GameObject } from "./game_object";
 
 export class Bunny extends GameObject {

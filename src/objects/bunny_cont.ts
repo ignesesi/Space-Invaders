@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Settings } from "./settings";
+import { Settings } from "../settings";
 
 export class Bunny_Cont extends PIXI.Container {
     public deltaX: number;

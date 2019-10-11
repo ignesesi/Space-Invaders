@@ -1,12 +1,11 @@
 import * as PIXI from "pixi.js";
 //import gsap from "gsap";
 import { Settings } from "./settings";
-import { Bunny_Cont } from "./bunny_cont";
-import { Bunny } from "./bunny";
-import { Carrot } from "./carrot";
-//import { GameObject } from "./game_object";
-import { Mellon } from "./mellon";
-import { Panda } from "./panda";
+import { Bunny_Cont } from "./objects/bunny_cont";
+import { Bunny } from "./objects/bunny";
+import { Carrot } from "./objects/carrot";
+import { Mellon } from "./objects/mellon";
+import { Panda } from "./objects/panda";
 
 export class Main {
     private game: PIXI.Application;
@@ -22,7 +21,7 @@ export class Main {
             this.startLoadingAssets();
         };
     }
-    
+
     private startLoadingAssets(): void {
 
         const loader = PIXI.Loader.shared;
@@ -36,23 +35,26 @@ export class Main {
     private onAssetsLoaded(): void {
 
         this.createRenderer();
-        
+
         //this.game.stop();
 
         this.createObjects();
         this.createEvents();
         this.createTicker();
 
-        this.button("PLAY");
+        this.button("PLAY", false);
 
     }   
 
-    private button(str: string){
-
-        //this.game.stop();
+    private button(text: string, restart: boolean = false){
+        
         ///da se natisne
 
-        this.reset();
+        if(restart) {
+            this.game.stop();
+            this.reset();
+        }
+        //this.game.start();
     }
 
     private reset() :void {
@@ -78,7 +80,7 @@ export class Main {
 
         function key_down (args: any) {
 
-            console.log("bla");
+            console.log(args.key);
             if(args.key == "ArrowLeft") {
                 panda.deltaX = -Settings.panda.deltaX;
             }
@@ -87,6 +89,14 @@ export class Main {
             }
             if(args.key == " " && !mellon.visible){
                 mellon.add(stage, panda.x + panda.width/2, panda.y);
+            }
+
+            if(args.key == "R" || args.key == "r") {
+                //TODO
+            }
+
+            if(args.key == "p" || args.key == "P") {
+                //TODO
             }
         }
 
@@ -129,7 +139,7 @@ export class Main {
             if(carrot.areColliding(panda)){
                 panda.lives --;
                 if(panda.lives == 0) {
-                    this.button("GAME OVER :( PLAY AGAIN");
+                    this.button("GAME OVER :( PLAY AGAIN", true);
                 }
                 carrot.reset();
             }
@@ -162,7 +172,7 @@ export class Main {
     
                         bunnies_num --;
                         if(bunnies_num == 0) {
-                            this.button("YOU WON :) PLAY AGAIN");
+                            this.button("YOU WON :) PLAY AGAIN", true);
                         }
                         //stage.removeChild(mellon);
                     }

@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Settings } from "./settings";
+import { Settings } from "../settings";
 
 export class GameObject extends PIXI.Sprite {
     public deltaX: number;

@@ -24,3 +24,10 @@ Beginner friendly emplate for pixi.js with typescript & babel + browserify
 -  ` npm run watch` - will start tsc watcher & live server for better developing experience 
 
  For vscode users - ctrl ( or ⌘  ) + shift + b will run the watch build as its set as default vscode task
+
+ ## TODO
+Add play button
+Add P/p - pause
+Add R/r - restart
+Add lives
+Add score
