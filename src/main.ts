@@ -22,6 +22,7 @@ export class Main {
             this.startLoadingAssets();
         };
     }
+    
     private startLoadingAssets(): void {
 
         const loader = PIXI.Loader.shared;
@@ -35,10 +36,12 @@ export class Main {
     private onAssetsLoaded(): void {
 
         this.createRenderer();
-
+        
         //this.game.stop();
 
         this.createObjects();
+        this.createEvents();
+        this.createTicker();
 
         this.button("PLAY");
 
@@ -50,26 +53,30 @@ export class Main {
         ///da se natisne
 
         this.reset();
-        this.play();
     }
 
-    private play() :void {
-        //this.game.start();
+    private reset() :void {
+        this.panda.reset();
+        this.carrot.reset();
+        this.mellon.remove(this.game.stage);
+        this.bunny_cont.reset();
+        this.bunnies_num = Settings.bunny_cont.rows * Settings.bunny_cont.cols;
+        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
+            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
+                this.bunnies[i*Settings.bunny_cont.cols+j].reset(i,j);
+            }
+        }
+    }
 
+    private createEvents() :void {
         const panda = this.panda;
         const mellon = this.mellon;
-        const bunnies = this.bunnies;
-        const bunny_cont = this.bunny_cont;
-        const carrot = this.carrot;
         const stage = this.game.stage;
-        let bunnies_num = this.bunnies_num;
-        /*
-        window.addEventListener("keydown", key_down(args));
-        window.addEventListener("keyup", key_up(args));
-        this.game.ticker.add(game_loop());
-    */
+        
+        window.addEventListener("keydown", key_down);
+        window.addEventListener("keyup", key_up);
 
-        window.addEventListener("keydown", (args) => {
+        function key_down (args: any) {
 
             console.log("bla");
             if(args.key == "ArrowLeft") {
@@ -81,15 +88,42 @@ export class Main {
             if(args.key == " " && !mellon.visible){
                 mellon.add(stage, panda.x + panda.width/2, panda.y);
             }
-        });
+        }
 
-        window.addEventListener("keyup", (args) => {
+        function key_up (args: any) {
             if(args.key == "ArrowLeft" || args.key == "ArrowRight") {
                 panda.deltaX = 0;
             }
-        });
+        }
+    
+    }
+
+    private createObjects(): void {
+        const stage = this.game.stage;
+        this.bunny_cont = new Bunny_Cont(stage);
+        this.bunnies = [];
+        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
+            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
+                let bunny = new Bunny(this.bunny_cont,i, j);
+                this.bunnies.push(bunny);
+            }
+        }
+        this.panda = new Panda(stage);
+        this.mellon = new Mellon(stage);
+        this.carrot = new Carrot(stage);
+    }
+        
+    private createTicker(): void{
 
         this.game.ticker.add(() => {
+            const panda = this.panda;
+            const mellon = this.mellon;
+            const bunnies = this.bunnies;
+            const bunny_cont = this.bunny_cont;
+            const carrot = this.carrot;
+            const stage = this.game.stage;
+            let bunnies_num = this.bunnies_num;
+    
             panda.x += panda.deltaX;
             carrot.y +=  carrot.deltaY;
             if(carrot.areColliding(panda)){
@@ -110,7 +144,7 @@ export class Main {
                 bunny_cont.x += bunny_cont.deltaX;
                 mellon.y += mellon.deltaY;
             }
-
+    
             if(mellon.visible) {
                 //console.log(mellon.x,mellon.y);
                 mellon.y += mellon.deltaY;
@@ -125,7 +159,7 @@ export class Main {
                         //stage.removeChild(bunnies[i]);
                         bunnies[i].remove(stage);
                         mellon.remove(stage);
-
+    
                         bunnies_num --;
                         if(bunnies_num == 0) {
                             this.button("YOU WON :) PLAY AGAIN");
@@ -134,36 +168,7 @@ export class Main {
                     }
                 }
             }
-
         });
-    }
-
-    private reset() :void {
-        this.panda.reset();
-        this.carrot.reset();
-        this.mellon.remove(this.game.stage);
-        this.bunny_cont.reset();
-        this.bunnies_num = Settings.bunny_cont.rows * Settings.bunny_cont.cols;
-        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
-            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
-                this.bunnies[i*Settings.bunny_cont.cols+j].reset(i,j);
-            }
-        }
-    }
-
-    private createObjects(): void {
-        const stage = this.game.stage;
-        this.bunny_cont = new Bunny_Cont(stage);
-        this.bunnies = [];
-        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
-            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
-                let bunny = new Bunny(this.bunny_cont,i, j);
-                this.bunnies.push(bunny);
-            }
-        }
-        this.panda = new Panda(stage);
-        this.mellon = new Mellon(stage);
-        this.carrot = new Carrot(stage);
     }
 
     private createRenderer(): void {
