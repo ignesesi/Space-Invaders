@@ -17,8 +17,14 @@ export class Mellon extends GameObject {
 
     }
 
-    remove(stage: PIXI.Container){
+    public remove(stage: PIXI.Container) :void {
         super.remove(stage);
         this.visible = false;
+    }
+
+    public add(stage: PIXI.Container,x: number, y: number) :void {
+        super.reset(x,y);
+        this.visible = true;
+        stage.addChild(this);
     }
 }

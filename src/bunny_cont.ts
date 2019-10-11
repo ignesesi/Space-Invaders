@@ -6,11 +6,14 @@ export class Bunny_Cont extends PIXI.Container {
 
     constructor(stage: PIXI.Container) {
         super();
-        
+        this.reset();
+
+        stage.addChild(this);
+    }
+
+    public reset() :void {
         this.x = Settings.offset.width; 
         this.y = Settings.offset.height;
         this.deltaX = Settings.bunny_cont.deltaX;
-
-        stage.addChild(this);
     }
 }

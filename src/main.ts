@@ -10,6 +10,12 @@ import { Panda } from "./panda";
 
 export class Main {
     private game: PIXI.Application;
+    private panda: Panda;
+    private carrot: Carrot;
+    private bunnies: Bunny[];
+    private bunnies_num: number;
+    private mellon: Mellon;
+    private bunny_cont: Bunny_Cont;
 
     constructor() {
         window.onload = () => {
@@ -17,6 +23,7 @@ export class Main {
         };
     }
     private startLoadingAssets(): void {
+
         const loader = PIXI.Loader.shared;
         loader.add("images", "assets/images/images.json");
         loader.on("complete", () => {
@@ -26,47 +33,44 @@ export class Main {
     }
 
     private onAssetsLoaded(): void {
+
         this.createRenderer();
+
+        //this.game.stop();
+
+        this.createObjects();
 
         this.button("PLAY");
 
     }   
 
-    button(str: string){
+    private button(str: string){
+
+        //this.game.stop();
+        ///da se natisne
+
+        this.reset();
         this.play();
     }
 
-    play(){
+    private play() :void {
+        //this.game.start();
+
+        const panda = this.panda;
+        const mellon = this.mellon;
+        const bunnies = this.bunnies;
+        const bunny_cont = this.bunny_cont;
+        const carrot = this.carrot;
         const stage = this.game.stage;
-            
-        //console.warn(Settings.init.width, Settings.init.height);
-        let bunnies: Bunny[] = [];
-        let bunny_cont = new Bunny_Cont(stage);
-        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
-            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
-                let bunny = new Bunny(bunny_cont,i, j);
-                //console.log(bunny.x, bunny.y);
-                //bunny_cont.addChild(bunny);
-                bunnies.push(bunny);
-            }
-        }
-        //stage.addChild(bunny_cont);
-
-        let panda = new Panda(stage);
-        //let panda = new GameObject(stage, Settings.panda, "panda", (Settings.game.width - Settings.panda.width)/2, Settings.game.height - 2 * Settings.panda.height);
-
-        //stage.addChild(panda);
-
-        let mellon = new Mellon(stage);
-
-        let carrot = new Carrot(stage);
-    /*
+        let bunnies_num = this.bunnies_num;
+        /*
         window.addEventListener("keydown", key_down(args));
         window.addEventListener("keyup", key_up(args));
         this.game.ticker.add(game_loop());
     */
 
         window.addEventListener("keydown", (args) => {
+
             console.log("bla");
             if(args.key == "ArrowLeft") {
                 panda.deltaX = -Settings.panda.deltaX;
@@ -75,12 +79,7 @@ export class Main {
                 panda.deltaX = Settings.panda.deltaX;
             }
             if(args.key == " " && !mellon.visible){
-                //console.log("Space");
-                mellon.x = panda.x + panda.width/2;
-                mellon.y = panda.y;
-                //console.log(mellon.x,mellon.y);
-                mellon.visible = true;
-                stage.addChild(mellon);
+                mellon.add(stage, panda.x + panda.width/2, panda.y);
             }
         });
 
@@ -98,12 +97,10 @@ export class Main {
                 if(panda.lives == 0) {
                     this.button("GAME OVER :( PLAY AGAIN");
                 }
-                carrot.x = carrot.newX();
-                carrot.y = carrot.newY();
+                carrot.reset();
             }
             if(carrot.y > Settings.game.height){
-                carrot.x = carrot.newX();
-                carrot.y = carrot.newY();
+                carrot.reset();
                 console.log(carrot.x, carrot.y)
             }
             //console.log(panda.x, panda.y, panda.deltaX, Settings.panda.deltaX);
@@ -120,9 +117,8 @@ export class Main {
                 mellon.rotation += mellon.deltaR;
                 if(mellon.y + mellon.height <= 0) {
                     mellon.remove(stage);
-                    stage.removeChild(mellon);
                 }
-                for(let i = 0; i < Settings.bunny_cont.rows*Settings.bunny_cont.cols; i++) {
+                for(let i = 0; i < bunnies.length; i++) {
                     if(mellon.areColliding(bunnies[i])) {
                         //console.log("aaa");
                         panda.score += bunnies[i].price;
@@ -130,8 +126,8 @@ export class Main {
                         bunnies[i].remove(stage);
                         mellon.remove(stage);
 
-                        bunnies.length --;
-                        if(bunnies.length == 0) {
+                        bunnies_num --;
+                        if(bunnies_num == 0) {
                             this.button("YOU WON :) PLAY AGAIN");
                         }
                         //stage.removeChild(mellon);
@@ -140,7 +136,34 @@ export class Main {
             }
 
         });
+    }
 
+    private reset() :void {
+        this.panda.reset();
+        this.carrot.reset();
+        this.mellon.remove(this.game.stage);
+        this.bunny_cont.reset();
+        this.bunnies_num = Settings.bunny_cont.rows * Settings.bunny_cont.cols;
+        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
+            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
+                this.bunnies[i*Settings.bunny_cont.cols+j].reset(i,j);
+            }
+        }
+    }
+
+    private createObjects(): void {
+        const stage = this.game.stage;
+        this.bunny_cont = new Bunny_Cont(stage);
+        this.bunnies = [];
+        for(let i = 0; i < Settings.bunny_cont.rows; i++) {
+            for(let j = 0; j < Settings.bunny_cont.cols; j++) {
+                let bunny = new Bunny(this.bunny_cont,i, j);
+                this.bunnies.push(bunny);
+            }
+        }
+        this.panda = new Panda(stage);
+        this.mellon = new Mellon(stage);
+        this.carrot = new Carrot(stage);
     }
 
     private createRenderer(): void {
@@ -149,19 +172,7 @@ export class Main {
             width: Settings.game.width,
             height: Settings.game.height
         });
-
         document.body.appendChild(this.game.view);
-/*
-        this.game.renderer.resize(window.innerWidth, window.innerHeight);
-        this.game.stage.scale.x = window.innerWidth / Main.GAME_WIDTH;
-        this.game.stage.scale.y = window.innerHeight / Main.GAME_HEIGHT;
-
-        window.addEventListener("resize", () => {
-            this.game.renderer.resize(window.innerWidth, window.innerHeight);
-            this.game.stage.scale.x = window.innerWidth / Main.GAME_WIDTH;
-            this.game.stage.scale.y = window.innerHeight / Main.GAME_HEIGHT;
-        });
-*/
 
     }
 }

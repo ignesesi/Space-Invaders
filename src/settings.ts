@@ -1,58 +1,8 @@
-
-class View {
-    width: number;
-    height: number;
-    constructor(w: number, h: number){
-        this.width = w;
-        this.height = h;
-    }
-}
-
-class ObjectView extends View{
-    deltaX: number;
-    deltaY: number;
-    texture: string;
-    x: number;
-    y: number;
-    constructor(tex: string, w: number, h: number, dX: number = 0, dY: number = 0){
-        super(w,h);
-        this.texture = tex;
-        this.width = w;
-        this.height = h;
-        this.deltaX = dX;
-        this.deltaY = dY;
-    }
-}
-
-class BunnyCont {
-    rows: number;
-    cols: number;
-    deltaX: number;
-    constructor(r: number, c: number, dx: number){
-        this.rows = r;
-        this.cols = c;
-        this.deltaX = dx;
-    }
-}
-
-class Bunny extends ObjectView {
-    spacing: number;
-    tints: number[];
-    constructor(tex: string, w: number, h: number, sp: number, t: number[]){
-        super(tex, w - sp, h - sp);
-        this.spacing = sp;
-        this.tints = t;
-    }
-}
-
-class Mellon extends ObjectView {
-    deltaR: number;
-    constructor(tex: string, w: number, h: number, dY: number, dR: number){
-        super(tex, w, h, 0, dY);
-        this.deltaR = dR;
-    }
-}
-
+import { View } from "./views/view";
+import { ObjectView } from "./views/object_view";
+import { BunnyCont } from "./views/bunny_cont";
+import { Bunny } from "./views/bunny";
+import { Mellon } from "./views/mellon";
 export class Settings {
     static readonly game: View = new View(800, 800);
     static readonly bunny_cont: BunnyCont = new BunnyCont(5, 10, 2);
