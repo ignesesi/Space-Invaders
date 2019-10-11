@@ -4,10 +4,10 @@ import { GameObject } from "./game_object";
 
 export class Mellon extends GameObject {
     public visible: boolean;
-    deltaR: number;
+    public deltaR: number;
 
     constructor(stage: PIXI.Container, x: number = 0, y: number = 0) {
-        super(stage, Settings.mellon, "mellon", x, y);
+        super(stage, Settings.mellon, x, y);
 
         //this.pivot.set (0.5, 0.5);
         this.anchor.set (0.5, 0.5);

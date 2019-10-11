@@ -5,19 +5,30 @@ export class GameObject extends PIXI.Sprite {
     public deltaX: number;
     public deltaY: number;
 
-    constructor(stage: PIXI.Container, obj: any, name: string = "", x: number = 0, y: number = 0) {
-        super(PIXI.Texture.from(name+".png"));
+    constructor(stage: PIXI.Container, obj: any, x: number = 0, y: number = 0) {
+        super(PIXI.Texture.from(obj.texture));
         //stage.addChild(panda);
         //Settings[name].width
         
         this.width = obj.width;
         this.height = obj.height;
-        this.x = x;
-        this.y = y;
         this.deltaX = obj.deltaX;
         this.deltaY = obj.deltaY;
+        this.x = x;
+        this.y = y;
         stage.addChild(this);
     }
+    /*
+    
+    reset(obj: any, x: number = 0, y: number = 0){
+        this.width = obj.width;
+        this.height = obj.height;
+        this.deltaX = obj.deltaX;
+        this.deltaY = obj.deltaY;
+        this.x = x;
+        this.y = y;
+    }
+    */
 
     get centerX(){
         if(this.anchor.x == 0) {
