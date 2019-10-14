@@ -53,8 +53,8 @@ export class GameObject extends PIXI.Sprite {
     }
 
     public remove(stage: PIXI.Container) :void {
-        this.reset(Settings.game.width, Settings.game.height);
         stage.removeChild(this);
+        this.reset(Settings.game.width*2, Settings.game.height*2);
     }
 
     public reset(x: number = 0, y: number = 0) :void {

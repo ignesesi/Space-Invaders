@@ -10,7 +10,7 @@ export class Bunny extends GameObject {
         super(stage, Settings.bunny);
         this.reset(i, j);
         this.tint = Settings.bunny.tints[i];
-        this.price = i;
+        this.price = Settings.bunny.prices[i];
     }
 
     public reset(i: number, j: number) :void {
