@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
 import { View } from "./views/view";
-import { ObjectView } from "./views/object_view";
 import { BunnyCont } from "./views/bunny_cont";
 import { Bunny } from "./views/bunny";
 import { Mellon } from "./views/mellon";
+import { Carrot } from "./views/carrot";
 import { Button } from "./views/button";
 import { Panda } from "./views/panda";
 import { Text } from "./views/text";
 import { Explosion } from "./views/explosion";
 export class Settings {
     static readonly game: View = new View(800, 800);
-    static readonly bunny_cont: BunnyCont = new BunnyCont(5, 7, 2);
+    static readonly bunny_cont: BunnyCont = new BunnyCont(3, 7, 2);
     
     static readonly init: View = 
     new View(Settings.game.width / (Settings.bunny_cont.cols + 2), Settings.game.width / (Settings.bunny_cont.cols + 2));
@@ -34,13 +34,13 @@ export class Settings {
 
     static readonly panda: Panda = new Panda("panda.png", Settings.init.width, Settings.init.height, 5, (Settings.game.width - Settings.init.width)/2, Settings.game.height - Settings.init.height);
     
-    static readonly mellon: Mellon = new Mellon("mellon.png", Settings.panda.width / 3, Settings.panda.height / 3, -8, 0.8, 5);
+    static readonly mellon: Mellon = new Mellon("mellon.png", Settings.panda.width / 3, Settings.panda.height / 3, -8, 0.8, 3);
 
     static readonly bunny: Bunny = new Bunny("bunny.png", Settings.init.width, Settings.init.height,
         Settings.init.width * 1/5, [0xff0000, 0xeb8634, 0xffff00, 0x34eb3a, 0x00ffe5],
         [10,8,5,3,1,0,0,0,0,0]);
 
-    static readonly carrot: ObjectView = new ObjectView("carrot.png", Settings.bunny.width / 5, Settings.bunny.height * 2/3, 0, 5);
+    static readonly carrot: Carrot = new Carrot("carrot.png", Settings.bunny.width / 5, Settings.bunny.height * 2/3, 0, 5, 2);
 
     static readonly offset: View = new View((Settings.game.width - Settings.init.width * Settings.bunny_cont.cols) / 2, Settings.bunny.height);
     //for the bunny cont

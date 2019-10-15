@@ -9,10 +9,12 @@ Add collision between carrot and mellon - ok
 Add settings for lives and score - ok
 
 Add more explosions - ok
-Add more carrots
+Add more carrots - ok
 Add more melons - ok
 
 Add not random start for carrots
+Fix explosions
+Fix mellons
 
 Add dialog when R/r pressed
 Add P/p disable pause

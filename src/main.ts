@@ -19,7 +19,7 @@ export class Main {
 
     private panda: Panda;
     private mellon: Mellon[];
-    private carrot: Carrot;
+    private carrot: Carrot[];
 
     private bunnies: Bunny[];
     private bunnies_num: number;
@@ -76,8 +76,12 @@ export class Main {
 
     private reset(): void {
         this.panda.reset();
-        this.carrot.reset();
 
+        for(let i = 0; i < this.carrot.length; i ++) {
+            this.carrot[i].reset();
+        }
+        //this.carrot.splice(0,this.carrot.length);
+        
         ///#############################
         for(let i = 0; i < this.mellon.length; i ++) {
             this.mellon[i].remove();
@@ -163,9 +167,14 @@ export class Main {
         
         ///#############################
         this.mellon = [];
-        ///#############################
-        this.carrot = new Carrot(stage);
+
+        this.carrot = [];
+        for(let i = 0; i < Settings.carrot.max_number; i++) {
+            this.carrot.push(new Carrot(stage));
+        }
+
         this.explosion = new Explosion(stage);
+        ///#############################
 
         this.game.stage.addChild(stage);
         this.button = new Button(this.game.stage);
@@ -195,16 +204,21 @@ export class Main {
                 let explosion = this.explosion;
         
                 panda.move();
-                carrot.move();
 
-                if(carrot.areColliding(panda)){
-                    lives.value --;
-                    //explosion.add(panda.x, panda.y);
-                    explosion.add(panda.x, panda.y);
-                    if(lives.value == 0) {
-                        this.pause_restart("GAME OVER\n PLAY AGAIN", true);
+                for(let i = 0; i < carrot.length; i ++) {
+                    carrot[i].move();
+
+                    if(carrot[i].areColliding(panda)){
+                        lives.value --;
+                        //explosion.add(panda.x, panda.y);
+                        explosion.add(panda.x, panda.y);
+                        if(lives.value == 0) {
+                            this.pause_restart("GAME OVER\n PLAY AGAIN", true);
+                        }
+                        carrot[i].reset();
+                        //carrot.splice(i, 1);
+                        //i--;
                     }
-                    carrot.reset();
                 }
 
                 bunny_cont.move();
@@ -214,7 +228,7 @@ export class Main {
 
                     if(j >= 0 && mellon[j].y < 0) {
                         mellon[j].remove();
-                        mellon.splice(j,1);
+                        mellon.splice(j, 1);
                         j--;
                     }
 
@@ -227,7 +241,7 @@ export class Main {
                             bunnies[i].remove();
         
                             mellon[j].remove();
-                            mellon.splice(j,1);
+                            mellon.splice(j, 1);
                             j--;
                             this.bunnies_num --;
 
@@ -236,14 +250,19 @@ export class Main {
                             }
                         }
                     }
-                    if(j >= 0 && j < mellon.length && mellon[j].areColliding(carrot)){
-                        //explosion.add(carrot.x, carrot.y);
-                        explosion.add(carrot.x, carrot.y)
-                        carrot.reset();
-                        
-                        mellon[j].remove();
-                        mellon.splice(j,1);
-                        j--;
+                    for(let i = 0; i < carrot.length  && j < mellon.length && j >= 0; i ++) {
+                        if(j >= 0 && j < mellon.length && mellon[j].areColliding(carrot[i])){
+                            //explosion.add(carrot.x, carrot.y);
+                            explosion.add(carrot[i].x, carrot[i].y);
+
+                            carrot[i].reset();
+                            //carrot.splice(i, 1);
+                            //i--;
+                            
+                            mellon[j].remove();
+                            mellon.splice(j, 1);
+                            j--;
+                        }
                     }
                 }
 
