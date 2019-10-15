@@ -192,13 +192,15 @@ export class Main {
                 const carrot = this.carrot;
                 const lives = this.lives;
                 const score = this.score;
-                const explosion = this.explosion;
+                const stage = this.main_cont;
+                let explosion = this.explosion;
         
                 panda.move();
                 carrot.move();
 
                 if(carrot.areColliding(panda)){
                     lives.value --;
+                    //explosion.add(panda.x, panda.y);
                     explosion.add(panda.x, panda.y);
                     if(lives.value == 0) {
                         this.pause_restart("GAME OVER\n PLAY AGAIN", true);
@@ -219,25 +221,28 @@ export class Main {
 
                     for(let i = 0; i < bunnies.length && j < mellon.length && j >= 0; i++) {
                         if(j >= 0 && mellon[j].areColliding(bunnies[i])) {
+                            //explosion.add(bunnies[i].getGlobalPosition().x, bunnies[i].getGlobalPosition().y);
                             explosion.add(bunnies[i].getGlobalPosition().x, bunnies[i].getGlobalPosition().y);
+
                             score.value += bunnies[i].price;
                             bunnies[i].remove();
-                            mellon[j].remove();
         
+                            mellon[j].remove();
+                            mellon.splice(j,1);
+                            j--;
                             this.bunnies_num --;
+
                             if(this.bunnies_num == 0) {
                                 this.pause_restart("YOU WON\n PLAY AGAIN", true);
                             }
-                            
-                            mellon.splice(j,1);
-                            j--;
                         }
                     }
                     if(j >= 0 && j < mellon.length && mellon[j].areColliding(carrot)){
-                        explosion.add(carrot.x, carrot.y);
-                        mellon[j].remove();
+                        //explosion.add(carrot.x, carrot.y);
+                        explosion.add(carrot.x, carrot.y)
                         carrot.reset();
                         
+                        mellon[j].remove();
                         mellon.splice(j,1);
                         j--;
                     }

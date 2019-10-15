@@ -10,7 +10,7 @@ Add settings for lives and score - ok
 
 Add more explosions
 Add more carrots
-Add more melons
+Add more melons - ok
 
 Add dialog when R/r pressed
 Add P/p disable pause
