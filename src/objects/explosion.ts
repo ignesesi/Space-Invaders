@@ -27,9 +27,9 @@ export class Explosion{
         anim.animationSpeed = Settings.explosion.speed;
         anim.gotoAndPlay(0);
 
-        anim.on("complete", () => {
+        anim.onComplete = () => {
             this.stage.removeChild(anim);
-        });
+        };
     }
 /*
     constructor(stage: PIXI.Container){

@@ -13,7 +13,7 @@ Add more carrots - ok
 Add more melons - ok
 
 Add not random start for carrots
-Fix explosions
+Fix explosions - ok
 Fix mellons
 
 Add dialog when R/r pressed
