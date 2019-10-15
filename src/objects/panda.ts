@@ -17,4 +17,14 @@ export class Panda extends GameObject {
         this.deltaX = 0;
         super.reset(Settings.panda.x, Settings.panda.y);
     }
+
+    public move() :void {
+        this.x += this.deltaX;
+        if(this.x < 0) {
+            this.x = 0;
+        }
+        if(this.x + this.width > Settings.game.width) {
+            this.x = Settings.game.width - this.width;
+        }
+    }
 }

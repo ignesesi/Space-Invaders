@@ -4,6 +4,7 @@ import { Settings } from "../settings";
 export class GameObject extends PIXI.Sprite {
     public deltaX: number;
     public deltaY: number;
+    protected stage: PIXI.Container;
 
     constructor(stage: PIXI.Container, obj: any, x: number = 0, y: number = 0) {
         super(PIXI.Texture.from(obj.texture));
@@ -13,13 +14,13 @@ export class GameObject extends PIXI.Sprite {
         this.height = obj.height;
         this.deltaX = obj.deltaX;
         this.deltaY = obj.deltaY;
-
+        this.stage = stage;
         this.reset(x, y);
 
-        stage.addChild(this);
+        this.stage.addChild(this);
     }
 
-    get centerX() :number {
+    protected get centerX() :number {
         if(this.anchor.x == 0) {
             return this.getGlobalPosition().x + this.width / 2
         }
@@ -27,12 +28,12 @@ export class GameObject extends PIXI.Sprite {
         return this.getGlobalPosition().x;
     }
 
-    get centerY() :number {
+    protected get centerY() :number {
         if(this.anchor.y == 0) {
             return this.getGlobalPosition().y + this.height / 2
         }
         //console.warn("XXX");
-        return this.y;
+        return this.getGlobalPosition().y;
     }
 
     public areColliding(obj: GameObject) :boolean {
@@ -52,8 +53,8 @@ export class GameObject extends PIXI.Sprite {
         return false;
     }
 
-    public remove(stage: PIXI.Container) :void {
-        stage.removeChild(this);
+    public remove() :void {
+        this.stage.removeChild(this);
         this.reset(Settings.game.width*2, Settings.game.height*2);
     }
 

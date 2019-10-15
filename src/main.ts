@@ -13,15 +13,18 @@ import { Explosion } from "./objects/explosion";
 
 export class Main {
     private game: PIXI.Application;
+    private main_cont: PIXI.Container;
+    private button: Button;
+
+    private isStopped: boolean;
+
     private panda: Panda;
-    private carrot: Carrot;
+    private mellon: Mellon;
     private bunnies: Bunny[];
     private bunnies_num: number;
-    private mellon: Mellon;
     private bunny_cont: Bunny_Cont;
-    private button: Button;
-    private main_cont: PIXI.Container;
-    private isStopped: boolean;
+    private carrot: Carrot;
+
     private lives: Text;
     private score: Text;
     private explosion: Explosion;
@@ -53,7 +56,7 @@ export class Main {
 
     private pause_restart(text: string, restart: boolean = false){
         
-        this.button.add(this.game.stage, text);
+        this.button.add(text);
         this.game.stage.removeChild(this.main_cont);
         this.removeEvents();
         this.isStopped = true;
@@ -73,7 +76,7 @@ export class Main {
     private reset() :void {
         this.panda.reset();
         this.carrot.reset();
-        this.mellon.remove(this.main_cont);
+        this.mellon.remove();
         this.bunny_cont.reset();
         this.lives.reset(Settings.lives);
         this.score.reset(Settings.score);
@@ -87,11 +90,9 @@ export class Main {
         }
     }
 
-    //private key_down (args: any) {
     key_down = (args: any) => {
         const panda = this.panda;
         const mellon = this.mellon;
-        const stage = this.main_cont;
         //console.log(args.key);
         if(args.key == "ArrowLeft") {
             panda.deltaX = -Settings.panda.deltaX;
@@ -100,11 +101,10 @@ export class Main {
             panda.deltaX = Settings.panda.deltaX;
         }
         if(args.key == " " && !mellon.visible){
-            mellon.add(stage, panda.x + panda.width/2, panda.y);
+            mellon.add(panda.x + panda.width/2, panda.y);
         }
     }
     
-    // private key_up (args: any) {
     key_up = (args: any) => {
         if(args.key == "ArrowLeft" || args.key == "ArrowRight") {
             this.panda.deltaX = 0;
@@ -133,17 +133,14 @@ export class Main {
 
     private createObjects(): void {
 
-        this.lives = new Text(Settings.lives);
-        this.score = new Text(Settings.score);
-
         this.bunnies_num = Settings.bunny_cont.rows * Settings.bunny_cont.cols;
         this.main_cont = new PIXI.Container();
         const stage = this.main_cont;
 
-        this.bunny_cont = new Bunny_Cont(stage);
-        
-        stage.addChild(this.lives, this.score);
+        this.lives = new Text(stage, Settings.lives);
+        this.score = new Text(stage, Settings.score);
 
+        this.bunny_cont = new Bunny_Cont(stage);
         this.bunnies = [];
         for(let i = 0; i < Settings.bunny_cont.rows; i++) {
             for(let j = 0; j < Settings.bunny_cont.cols; j++) {
@@ -154,14 +151,22 @@ export class Main {
         this.panda = new Panda(stage);
         this.mellon = new Mellon(stage);
         this.carrot = new Carrot(stage);
-
         this.explosion = new Explosion(stage);
 
         this.game.stage.addChild(stage);
-
-        this.button = new Button();
+        this.button = new Button(this.game.stage);
     }
-        
+
+    private createRenderer(): void {
+        this.game = new PIXI.Application({
+            backgroundColor: 0x000000,
+            width: Settings.game.width,
+            height: Settings.game.height
+        });
+
+        document.body.appendChild(this.game.view);
+    }
+ 
     private createTicker(): void{
 
         this.game.ticker.add(() => {
@@ -174,11 +179,10 @@ export class Main {
                 const lives = this.lives;
                 const score = this.score;
                 const explosion = this.explosion;
-
-                const stage = this.game.stage;
         
-                panda.x += panda.deltaX;
-                carrot.y +=  carrot.deltaY;
+                panda.move();
+                carrot.move();
+
                 if(carrot.areColliding(panda)){
                     lives.value --;
                     explosion.add(panda.x, panda.y);
@@ -187,63 +191,37 @@ export class Main {
                     }
                     carrot.reset();
                 }
-                if(carrot.y > Settings.game.height){
-                    carrot.reset();
-                    //console.log(carrot.x, carrot.y)
-                }
-                //console.log(panda.x, panda.y, panda.deltaX, Settings.panda.deltaX);
-                bunny_cont.x += bunny_cont.deltaX;
-                if(bunny_cont.x <= 0 || bunny_cont.x >= Settings.offset.width*2) {
-                    bunny_cont.deltaX *= (-1);
-                    bunny_cont.x += bunny_cont.deltaX;
-                    mellon.y += mellon.deltaY;
-                }
-        
+
+                bunny_cont.move();
+                
                 if(mellon.visible) {
-                    //console.log(mellon.x,mellon.y);
-                    mellon.y += mellon.deltaY;
-                    mellon.rotation += mellon.deltaR;
-                    if(mellon.y + mellon.height <= 0) {
-                        mellon.remove(stage);
-                    }
+                    mellon.move();
                     for(let i = 0; i < bunnies.length; i++) {
                         if(mellon.areColliding(bunnies[i])) {
-                            //console.log("aaa");
                             explosion.add(bunnies[i].getGlobalPosition().x, bunnies[i].getGlobalPosition().y);
                             score.value += bunnies[i].price;
-                            //stage.removeChild(bunnies[i]);
-                            bunnies[i].remove(bunny_cont);
-                            mellon.remove(stage);
+                            bunnies[i].remove();
+                            mellon.remove();
         
                             this.bunnies_num --;
-                            console.log("BUNNIES: ", this.bunnies_num);
                             if(this.bunnies_num == 0) {
                                 this.pause_restart("YOU WON\n PLAY AGAIN", true);
                             }
-                            //stage.removeChild(mellon);
                         }
                     }
+
                     if(mellon.areColliding(carrot)){
                         explosion.add(carrot.x, carrot.y);
-                        mellon.remove(stage);
+                        mellon.remove();
                         carrot.reset();
                     }
                 }
 
+                //lives, score
                 this.lives.update();
                 this.score.update();
             }
         });
-    }
-
-    private createRenderer(): void {
-        this.game = new PIXI.Application({
-            backgroundColor: 0x000000,
-            width: Settings.game.width,
-            height: Settings.game.height
-        });
-
-        document.body.appendChild(this.game.view);
     }
 }
 

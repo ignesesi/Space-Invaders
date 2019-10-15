@@ -10,7 +10,7 @@ import { Text } from "./views/text";
 import { Explosion } from "./views/explosion";
 export class Settings {
     static readonly game: View = new View(800, 800);
-    static readonly bunny_cont: BunnyCont = new BunnyCont(5, 10, 2);
+    static readonly bunny_cont: BunnyCont = new BunnyCont(2, 3, 2);
     
     static readonly init: View = 
     new View(Settings.game.width / (Settings.bunny_cont.cols + 2), Settings.game.width / (Settings.bunny_cont.cols + 2));

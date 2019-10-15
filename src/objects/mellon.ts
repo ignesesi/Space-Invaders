@@ -13,18 +13,26 @@ export class Mellon extends GameObject {
         this.anchor.set (0.5, 0.5);
         this.deltaR = Settings.mellon.deltaR;
 
-        this.remove(stage);
+        this.remove();
 
     }
 
-    public remove(stage: PIXI.Container) :void {
-        super.remove(stage);
+    public remove() :void {
+        super.remove();
         this.visible = false;
     }
 
-    public add(stage: PIXI.Container,x: number, y: number) :void {
+    public add(x: number, y: number) :void {
         super.reset(x,y);
         this.visible = true;
-        stage.addChild(this);
+        this.stage.addChild(this);
+    }
+
+    public move() :void {
+        this.y += this.deltaY;
+        this.rotation += this.deltaR;
+        if(this.y + this.height <= 0) {
+            this.remove();
+        }        
     }
 }
