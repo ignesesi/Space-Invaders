@@ -192,7 +192,6 @@ export class Main {
                 const carrot = this.carrot;
                 const lives = this.lives;
                 const score = this.score;
-                const stage = this.main_cont;
                 let explosion = this.explosion;
         
                 panda.move();

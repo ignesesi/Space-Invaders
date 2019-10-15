@@ -26,6 +26,10 @@ export class Explosion{
         anim.height = Settings.explosion.height;
         anim.animationSpeed = Settings.explosion.speed;
         anim.gotoAndPlay(0);
+
+        anim.on("complete", () => {
+            this.stage.removeChild(anim);
+        });
     }
 /*
     constructor(stage: PIXI.Container){
