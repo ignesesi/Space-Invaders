@@ -18,12 +18,13 @@ export class Main {
     private isStopped: boolean;
 
     private panda: Panda;
-    private mellon: Mellon;
+    private mellon: Mellon[];
+    private carrot: Carrot;
+
     private bunnies: Bunny[];
     private bunnies_num: number;
     private bunny_cont: Bunny_Cont;
-    private carrot: Carrot;
-
+    
     private lives: Text;
     private score: Text;
     private explosion: Explosion;
@@ -53,29 +54,37 @@ export class Main {
         this.pause_restart("PLAY", false);
     }   
 
-    private pause_restart(text: string, restart: boolean = false){
+    private pause_restart(text: string, restart: boolean = false): void {
         
         this.button.add(text);
         this.game.stage.removeChild(this.main_cont);
         this.removeEvents();
         this.isStopped = true;
+        
+        if(restart) {
+            this.reset();
+        }
 
         this.button.play.on("pointertap", () =>{
             this.game.stage.removeChild(this.button);
             this.game.stage.addChild(this.main_cont);
             this.createEvents();
-            if(restart) {
-                this.reset();
-            }
             this.isStopped = false;
         });
     
     }
 
-    private reset() :void {
+    private reset(): void {
         this.panda.reset();
         this.carrot.reset();
-        this.mellon.reset();
+
+        ///#############################
+        for(let i = 0; i < this.mellon.length; i ++) {
+            this.mellon[i].remove();
+        }
+        this.mellon.splice(0,this.mellon.length);
+        ///#############################
+
         this.bunny_cont.reset();
         this.lives.reset(Settings.lives);
         this.score.reset(Settings.score);
@@ -89,7 +98,7 @@ export class Main {
         }
     }
 
-    key_down = (args: any) => {
+    private key_down = (args: any) => {
         const panda = this.panda;
         const mellon = this.mellon;
         //console.log(args.key);
@@ -99,12 +108,15 @@ export class Main {
         if(args.key == "ArrowRight") {
             panda.deltaX = Settings.panda.deltaX;
         }
-        if(args.key == " " && !mellon.visible){
-            mellon.add(panda.x + panda.width/2, panda.y);
+        if(args.key == " " && mellon.length < Settings.mellon.max_number){
+
+            ///#############################
+            mellon.push(new Mellon(this.main_cont, panda.x + panda.width/2, panda.y));
+            ///#############################
         }
     }
     
-    key_up = (args: any) => {
+    private key_up = (args: any) => {
         if(args.key == "ArrowLeft" || args.key == "ArrowRight") {
             this.panda.deltaX = 0;
         }
@@ -114,17 +126,17 @@ export class Main {
         }
 
         if(args.key == "p" || args.key == "P") {
-            this.pause_restart("PAUSE",false);
+            this.pause_restart("PAUSE", false);
         }
     }
 
-    private createEvents() :void {
+    private createEvents(): void {
         //const pause_restart = this.pause_restart;
         window.addEventListener("keydown", this.key_down);
         window.addEventListener("keyup", this.key_up);
     }
 
-    private removeEvents() :void {
+    private removeEvents(): void {
         //const pause_restart = this.pause_restart;
         window.removeEventListener("keydown", this.key_down);
         window.removeEventListener("keyup", this.key_up);
@@ -148,7 +160,10 @@ export class Main {
             }
         }
         this.panda = new Panda(stage);
-        this.mellon = new Mellon(stage);
+        
+        ///#############################
+        this.mellon = [];
+        ///#############################
         this.carrot = new Carrot(stage);
         this.explosion = new Explosion(stage);
 
@@ -166,7 +181,7 @@ export class Main {
         document.body.appendChild(this.game.view);
     }
  
-    private createTicker(): void{
+    private createTicker(): void {
 
         this.game.ticker.add(() => {
             if(!this.isStopped) {
@@ -193,26 +208,38 @@ export class Main {
 
                 bunny_cont.move();
                 
-                if(mellon.visible) {
-                    mellon.move();
-                    for(let i = 0; i < bunnies.length; i++) {
-                        if(mellon.areColliding(bunnies[i])) {
+                for(let j = 0; j < mellon.length; j ++){
+                    mellon[j].move();
+
+                    if(j >= 0 && mellon[j].y < 0) {
+                        mellon[j].remove();
+                        mellon.splice(j,1);
+                        j--;
+                    }
+
+                    for(let i = 0; i < bunnies.length && j < mellon.length && j >= 0; i++) {
+                        if(j >= 0 && mellon[j].areColliding(bunnies[i])) {
                             explosion.add(bunnies[i].getGlobalPosition().x, bunnies[i].getGlobalPosition().y);
                             score.value += bunnies[i].price;
                             bunnies[i].remove();
-                            mellon.remove();
+                            mellon[j].remove();
         
                             this.bunnies_num --;
                             if(this.bunnies_num == 0) {
                                 this.pause_restart("YOU WON\n PLAY AGAIN", true);
                             }
+                            
+                            mellon.splice(j,1);
+                            j--;
                         }
                     }
-
-                    if(mellon.areColliding(carrot)){
+                    if(j >= 0 && j < mellon.length && mellon[j].areColliding(carrot)){
                         explosion.add(carrot.x, carrot.y);
-                        mellon.remove();
+                        mellon[j].remove();
                         carrot.reset();
+                        
+                        mellon.splice(j,1);
+                        j--;
                     }
                 }
 
