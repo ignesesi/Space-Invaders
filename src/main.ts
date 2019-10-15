@@ -10,7 +10,6 @@ import { Button } from "./objects/button";
 import { Text } from "./objects/text";
 import { Explosion } from "./objects/explosion";
 
-
 export class Main {
     private game: PIXI.Application;
     private main_cont: PIXI.Container;
@@ -76,7 +75,7 @@ export class Main {
     private reset() :void {
         this.panda.reset();
         this.carrot.reset();
-        this.mellon.remove();
+        this.mellon.reset();
         this.bunny_cont.reset();
         this.lives.reset(Settings.lives);
         this.score.reset(Settings.score);
@@ -217,7 +216,6 @@ export class Main {
                     }
                 }
 
-                //lives, score
                 this.lives.update();
                 this.score.update();
             }

@@ -22,6 +22,10 @@ export class Mellon extends GameObject {
         this.visible = false;
     }
 
+    public reset() :void {
+        this.remove();
+    }
+
     public add(x: number, y: number) :void {
         super.reset(x,y);
         this.visible = true;
