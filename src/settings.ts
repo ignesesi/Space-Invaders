@@ -6,13 +6,14 @@ import { Bunny } from "./views/bunny";
 import { Mellon } from "./views/mellon";
 import { Button } from "./views/button";
 import { Panda } from "./views/panda";
+import { Text } from "./views/text";
+import { Explosion } from "./views/explosion";
 export class Settings {
     static readonly game: View = new View(800, 800);
     static readonly bunny_cont: BunnyCont = new BunnyCont(5, 10, 2);
     
     static readonly init: View = 
     new View(Settings.game.width / (Settings.bunny_cont.cols + 2), Settings.game.width / (Settings.bunny_cont.cols + 2));
-
 
     static readonly text_style: PIXI.TextStyle = new PIXI.TextStyle({
         fontFamily: 'Arial',
@@ -31,7 +32,7 @@ export class Settings {
         //wordWrapWidth: w*2
     });
 
-    static readonly panda: Panda = new Panda("panda.png", Settings.init.width, Settings.init.height, 3, (Settings.game.width - Settings.init.width)/2, Settings.game.height - Settings.init.height, 3);
+    static readonly panda: Panda = new Panda("panda.png", Settings.init.width, Settings.init.height, 3, (Settings.game.width - Settings.init.width)/2, Settings.game.height - Settings.init.height);
     
     static readonly mellon: Mellon = new Mellon("mellon.png", Settings.panda.width / 3, Settings.panda.height / 3, -5, 0.2);
 
@@ -45,5 +46,11 @@ export class Settings {
     //for the bunny cont
 
     static readonly button: Button = new Button(Settings.game.width / 5, Settings.game.height / 10, Settings.game.width / 2, Settings.game.height / 2,
-        0x0, 0xff0000, Settings.text_style, Settings.game.height / 20); 
+        0x0, 0xff0000, Settings.text_style, Settings.game.height / 20 ); 
+
+    static readonly score: Text = new Text("Score: ", 0, Settings.text_style, 0, 0);
+    
+    static readonly lives: Text = new Text("Lives: ", 3, Settings.text_style, Settings.game.width - Number(Settings.text_style.fontSize) * 4, 0);
+
+    static readonly explosion: Explosion = new Explosion(Settings.init.width, Settings.init.height, 0.5, 25);
 }
