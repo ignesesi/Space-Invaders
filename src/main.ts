@@ -239,7 +239,7 @@ export class Main {
                 panda.move();
 
                 for(let i = 0; i < carrot.length; i ++) {
-                    carrot[i].move();
+                    carrot[i].move(panda.x);
 
                     if(carrot[i].areColliding(panda)){
                         lives.value --;
@@ -248,7 +248,7 @@ export class Main {
                         if(lives.value == 0) {
                             this.pause_restart("GAME OVER\n PLAY AGAIN", true);
                         }
-                        carrot[i].reset();
+                        carrot[i].reset(panda.x);
                         //carrot.splice(i, 1);
                         //i--;
                     }
@@ -288,7 +288,7 @@ export class Main {
                             //explosion.add(carrot.x, carrot.y);
                             explosion.add(carrot[i].x, carrot[i].y);
 
-                            carrot[i].reset();
+                            carrot[i].reset(panda.x);
                             //carrot.splice(i, 1);
                             //i--;
                             

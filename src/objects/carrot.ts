@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Settings } from "../settings";
 import { GameObject } from "./game_object";
-import { Panda } from "./panda";
 
 export class Carrot extends GameObject {
 
@@ -10,21 +9,24 @@ export class Carrot extends GameObject {
         this.reset();
     }
 
-    public reset() :void {
-        super.reset(this.newX(),this.newY());
+    public reset(pandax: number = -10) :void {
+        super.reset(this.newX(pandax),this.newY());
     }
 
-    public move() :void {
+    public move(pandax: number = -10) :void {
         this.y +=  this.deltaY;
         if(this.y > Settings.game.height){
-            this.reset();
+            this.reset(pandax);
         }
     }
 
-    private newX() :number {
-        const j = Math.floor(Math.random() * Settings.bunny_cont.cols);
-        const x = j * Settings.init.width + (Settings.bunny.spacing / 2); 
-        return x;
+    private newX(pandax: number = -10) :number {
+        if(pandax == -10 || Math.random() < Settings.carrot.random) {
+            const j = Math.floor(Math.random() * Settings.bunny_cont.cols);
+            const x = j * Settings.init.width + (Settings.bunny.spacing / 2); 
+            return x;
+        }
+        return pandax;
     }
     private newY() :number {
         const i = Math.floor(Math.random() * Settings.bunny_cont.rows); 

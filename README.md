@@ -19,5 +19,5 @@ Add R/r/Space start - ok
 
 Wait 3 seconds after start - ok
 Fix mellons
-Add not random start for carrots
+Add not random start for carrots - ok
 Add dialog when R/r pressed

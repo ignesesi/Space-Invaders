@@ -41,7 +41,7 @@ export class Settings {
         Settings.init.width * 1/5, [0xff0000, 0xeb8634, 0xffff00, 0x34eb3a, 0x00ffe5],
         [10,8,5,3,1,0,0,0,0,0]);
 
-    static readonly carrot: Carrot = new Carrot("carrot.png", Settings.bunny.width / 5, Settings.bunny.height * 2/3, 0, 5, 2);
+    static readonly carrot: Carrot = new Carrot("carrot.png", Settings.bunny.width / 5, Settings.bunny.height * 2/3, 0, 5, 2, 0.5);
 
     static readonly offset: View = new View((Settings.game.width - Settings.init.width * Settings.bunny_cont.cols) / 2, Settings.bunny.height);
     //for the bunny cont
