@@ -9,6 +9,8 @@ import { Panda } from "./objects/panda";
 import { Button } from "./objects/button";
 import { Text } from "./objects/text";
 import { Explosion } from "./objects/explosion";
+import { start } from "repl";
+import { runInThisContext } from "vm";
 
 export class Main {
     private game: PIXI.Application;
@@ -51,26 +53,21 @@ export class Main {
         this.createObjects();
         this.createEvents();
         this.createTicker();
-        this.pause_restart("PLAY", false);
+        this.pause_restart("PLAY", true);
     }   
 
     private pause_restart(text: string, restart: boolean = false): void {
         
         this.button.add(text);
         this.game.stage.removeChild(this.main_cont);
-        this.removeEvents();
+        this.removeEvents(restart);
         this.isStopped = true;
         
         if(restart) {
             this.reset();
         }
 
-        this.button.play.on("pointertap", () =>{
-            this.game.stage.removeChild(this.button);
-            this.game.stage.addChild(this.main_cont);
-            this.createEvents();
-            this.isStopped = false;
-        });
+        this.button.play.on("pointertap", this.start);
     
     }
 
@@ -100,6 +97,13 @@ export class Main {
                 this.bunny_cont.addChild(this.bunnies[ind]);
             }
         }
+    }
+
+    private start = () =>{
+        this.game.stage.removeChild(this.button);
+        this.game.stage.addChild(this.main_cont);
+        this.createEvents();
+        this.isStopped = false;
     }
 
     private key_down = (args: any) => {
@@ -134,16 +138,34 @@ export class Main {
         }
     }
 
-    private createEvents(): void {
-        //const pause_restart = this.pause_restart;
-        window.addEventListener("keydown", this.key_down);
-        window.addEventListener("keyup", this.key_up);
+    private key_up_start = (args: any) => {
+        if(args.key == " "){
+            this.start();
+        }
     }
 
-    private removeEvents(): void {
-        //const pause_restart = this.pause_restart;
+    private key_up_pause = (args: any) => {
+        if(args.key == "p" || args.key == "P") {
+            this.start();
+        }
+    }
+
+    private createEvents(): void {
+        window.addEventListener("keydown", this.key_down);
+        window.addEventListener("keyup", this.key_up);
+
+        window.removeEventListener("keyup", this.key_up_start);
+        window.removeEventListener("keyup", this.key_up_pause);
+    }
+
+    private removeEvents(restart: boolean): void {
         window.removeEventListener("keydown", this.key_down);
         window.removeEventListener("keyup", this.key_up);
+
+        window.addEventListener("keyup", this.key_up_start);
+        if(!restart) {
+            window.addEventListener("keyup", this.key_up_pause);
+        }
     }
 
     private createObjects(): void {

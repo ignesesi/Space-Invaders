@@ -12,10 +12,12 @@ Add more explosions - ok
 Add more carrots - ok
 Add more melons - ok
 
-Add not random start for carrots
 Fix explosions - ok
-Fix mellons
 
+Add P/p disable pause - ok
+Add R/r/Space start - ok
+
+Wait 3 seconds after start
+Fix mellons
+Add not random start for carrots
 Add dialog when R/r pressed
-Add P/p disable pause
-Add R/r/Space start
