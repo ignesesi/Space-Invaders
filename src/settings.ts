@@ -8,6 +8,7 @@ import { Button } from "./views/button";
 import { Panda } from "./views/panda";
 import { Text } from "./views/text";
 import { Explosion } from "./views/explosion";
+import { Anim321 } from "./views/anim321";
 export class Settings {
     static readonly game: View = new View(800, 800);
     static readonly bunny_cont: BunnyCont = new BunnyCont(3, 7, 2);
@@ -53,4 +54,7 @@ export class Settings {
     static readonly lives: Text = new Text("Lives: ", 3, Settings.text_style, Settings.game.width - Number(Settings.text_style.fontSize) * 4, 0);
 
     static readonly explosion: Explosion = new Explosion(Settings.init.width, Settings.init.height, 0.5, 25);
+
+    static readonly anim321: Anim321 = new Anim321(Settings.game.width / 3, Settings.game.height / 3, 
+        (Settings.game.width - Settings.game.width / 3) / 2, (Settings.game.height - Settings.game.height / 3) / 2, 1);
 }

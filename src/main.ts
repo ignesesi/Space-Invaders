@@ -9,8 +9,7 @@ import { Panda } from "./objects/panda";
 import { Button } from "./objects/button";
 import { Text } from "./objects/text";
 import { Explosion } from "./objects/explosion";
-import { start } from "repl";
-import { runInThisContext } from "vm";
+import { Anim321 } from "./objects/anim321";
 
 export class Main {
     private game: PIXI.Application;
@@ -31,6 +30,8 @@ export class Main {
     private score: Text;
     private explosion: Explosion;
 
+    private anim321: Anim321;
+
     constructor() {
         window.onload = () => {
             this.startLoadingAssets();
@@ -41,6 +42,7 @@ export class Main {
         const loader = PIXI.Loader.shared;
         loader.add("images", "assets/images/images.json");
         loader.add("explosion", "assets/images/mc.json");
+        loader.add("numbers", "assets/images/0123456789.json");
         loader.on("complete", () => {
             this.onAssetsLoaded();
         });
@@ -57,18 +59,14 @@ export class Main {
     }   
 
     private pause_restart(text: string, restart: boolean = false): void {
-        
         this.button.add(text);
         this.game.stage.removeChild(this.main_cont);
         this.removeEvents(restart);
         this.isStopped = true;
-        
         if(restart) {
             this.reset();
         }
-
         this.button.play.on("pointertap", this.start);
-    
     }
 
     private reset(): void {
@@ -99,11 +97,18 @@ export class Main {
         }
     }
 
-    private start = () =>{
+    private start = () => {
         this.game.stage.removeChild(this.button);
         this.game.stage.addChild(this.main_cont);
+        this.removePauseEvents();
+
+        this.anim321.play();
+        //this.isStopped = false;
+    }
+
+    private startAfter321 = () => {
+        this.isStopped = false; 
         this.createEvents();
-        this.isStopped = false;
     }
 
     private key_down = (args: any) => {
@@ -125,6 +130,7 @@ export class Main {
     }
     
     private key_up = (args: any) => {
+        //console.log(args.key);
         if(args.key == "ArrowLeft" || args.key == "ArrowRight") {
             this.panda.deltaX = 0;
         }
@@ -139,7 +145,7 @@ export class Main {
     }
 
     private key_up_start = (args: any) => {
-        if(args.key == " "){
+        if(/*args.key == " " || */args.key == "Enter"){
             this.start();
         }
     }
@@ -153,7 +159,9 @@ export class Main {
     private createEvents(): void {
         window.addEventListener("keydown", this.key_down);
         window.addEventListener("keyup", this.key_up);
+    }
 
+    private removePauseEvents() :void {
         window.removeEventListener("keyup", this.key_up_start);
         window.removeEventListener("keyup", this.key_up_pause);
     }
@@ -200,6 +208,9 @@ export class Main {
 
         this.game.stage.addChild(stage);
         this.button = new Button(this.game.stage);
+
+        
+        this.anim321 = new Anim321(this.game.stage, this.startAfter321);
     }
 
     private createRenderer(): void {

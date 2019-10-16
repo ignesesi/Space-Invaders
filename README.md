@@ -17,7 +17,7 @@ Fix explosions - ok
 Add P/p disable pause - ok
 Add R/r/Space start - ok
 
-Wait 3 seconds after start
+Wait 3 seconds after start - ok
 Fix mellons
 Add not random start for carrots
 Add dialog when R/r pressed
