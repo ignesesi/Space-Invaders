@@ -16,6 +16,6 @@ export class Mellon extends GameObject {
 
     public move() :void {
         this.y += this.deltaY;
-        this.rotation += this.deltaR;       
+        this.rotation += this.deltaR;
     }
 }
